@@ -21,7 +21,7 @@ namespace ToyRobotSimulator
 
             //0, 0 are valid coordinates zero based
             if (!x.HasValue || !y.HasValue || x < 0 || x >= tableWidth || y < 0 || y >= tableHeight)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Coordinates not on table!");
 
             return true;
 
@@ -39,16 +39,16 @@ namespace ToyRobotSimulator
 
             switch (direction)
             {
-                case DirectionList.North:
+                case DirectionList.NORTH:
                     y = 1;
                     break;
-                case DirectionList.East:
+                case DirectionList.EAST:
                     x = 1;
                     break;
-                case DirectionList.South:
+                case DirectionList.SOUTH:
                     y = -1;
                     break;
-                case DirectionList.West:
+                case DirectionList.WEST:
                     x = -1;
                     break; 
             }

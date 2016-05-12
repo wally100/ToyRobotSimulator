@@ -78,7 +78,7 @@ namespace ToyRobotSimulator.Tests
             var height = 5;
             var tbl = new Table(width, height);
             var coordinates = new Coordinates(3, 3);
-            var newCoordinates = tbl.Move(coordinates, DirectionList.North);
+            var newCoordinates = tbl.Move(coordinates, DirectionList.NORTH);
 
 
             Assert.AreEqual(3, newCoordinates.X, "x coordinate should be set to 3");
@@ -93,7 +93,7 @@ namespace ToyRobotSimulator.Tests
             var height = 5;
             var tbl = new Table(width, height);
             var coordinates = new Coordinates(3, 3);
-            var newCoordinates = tbl.Move(coordinates, DirectionList.East);
+            var newCoordinates = tbl.Move(coordinates, DirectionList.EAST);
 
 
             Assert.AreEqual(4, newCoordinates.X, "x coordinate should be set to 4");
@@ -107,7 +107,7 @@ namespace ToyRobotSimulator.Tests
             var height = 5;
             var tbl = new Table(width, height);
             var coordinates = new Coordinates(3, 3);
-            var newCoordinates = tbl.Move(coordinates, DirectionList.West);
+            var newCoordinates = tbl.Move(coordinates, DirectionList.WEST);
 
 
             Assert.AreEqual(2, newCoordinates.X, "x coordinate should be set to 2");
@@ -121,7 +121,7 @@ namespace ToyRobotSimulator.Tests
             var height = 5;
             var tbl = new Table(width, height);
             var coordinates = new Coordinates(3, 3);
-            var newCoordinates = tbl.Move(coordinates, DirectionList.South);
+            var newCoordinates = tbl.Move(coordinates, DirectionList.SOUTH);
 
 
             Assert.AreEqual(3, newCoordinates.X, "x coordinate should be set to 3");

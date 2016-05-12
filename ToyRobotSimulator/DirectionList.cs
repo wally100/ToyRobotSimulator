@@ -8,9 +8,9 @@ namespace ToyRobotSimulator
 {
     public enum DirectionList
     {
-        North,
-        East,
-        South,
-        West
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
     }
 }

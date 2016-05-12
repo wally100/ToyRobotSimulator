@@ -1,18 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace ToyRobotSimulator.Utilities
 {
     public static class Extensions
     {
-        public static int ToInt32(string val)
+        private static Regex digitsOnly = new Regex(@"[^\d]");
+
+        public static string RemoveNonNumericCharacters(this string val)
         {
-            var output = 0;
-            int.TryParse(val, out output);
-            return output;
+            if(val != null)
+                return digitsOnly.Replace(val, string.Empty);
+            return null;
         }
+
+        public static int? ToInt32(this string val)
+        {
+            int output = 0;
+            if(int.TryParse(val, out output))
+                return output;
+            return null;
+        }
+
+       
     }
 }

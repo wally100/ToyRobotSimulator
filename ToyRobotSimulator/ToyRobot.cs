@@ -1,5 +1,6 @@
 ﻿using System;
 using ToyRobotSimulator.Events;
+using ToyRobotSimulator.Events.Exceptions;
 using ToyRobotSimulator.Events.Left;
 using ToyRobotSimulator.Events.Move;
 using ToyRobotSimulator.Events.Place;
@@ -13,8 +14,9 @@ namespace ToyRobotSimulator
 
         private readonly Table table;
         private readonly ReportEvent reportEvent;
+        private readonly ExceptionEvent exceptionEvent;
         private Coordinates currentLocation = new Coordinates(null, null);
-        private DirectionList currentDirection = DirectionList.North;
+        private DirectionList currentDirection = DirectionList.NORTH;
 
         public ToyRobot(IEventBus eventBus, Table table)
         {
@@ -22,6 +24,7 @@ namespace ToyRobotSimulator
             
             //Toy robot needs to report current location to anyone subscribed
             reportEvent = eventBus.Register<ReportEvent>();
+            exceptionEvent = eventBus.Register<ExceptionEvent>();
 
             //Command event subscriptions
             eventBus.Subscribe(new ReportRequestedEventHandler(onReportRequested));
@@ -34,27 +37,41 @@ namespace ToyRobotSimulator
 
         private bool onPlaceRequested(object sender, Report report)
         {
-            if (table.ValidateCoordinates(report.Coordinates))
+            try
             {
-                this.currentLocation = report.Coordinates;
-                this.currentDirection = report.Direction;
+                if (table.ValidateCoordinates(report.Coordinates))
+                {
+                    this.currentLocation = report.Coordinates;
+                    this.currentDirection = report.Direction;
+                }
             }
+            catch (InvalidOperationException ex)
+            {
+                if (!exceptionEvent.RaiseEvent(sender, ex))
+                    throw;
+                return false;
+            }
+          
 
             return true;
         }
 
         private bool onReportRequested(object sender, object param)
         {
-            if(isOnTable())               
+            if(isOnTable(sender))               
                 reportEvent.RaiseEvent(sender, new Report(this.currentLocation, this.currentDirection));
             return true;
         }
 
-        private bool isOnTable()
+        private bool isOnTable(object sender)
         {
             if (!currentLocation.X.HasValue)
             {
-                throw new InvalidOperationException("Not on table!");
+                var ex = new InvalidOperationException("Not on table!");
+                if (!exceptionEvent.RaiseEvent(sender, ex))
+                    throw ex;
+                else
+                    return false;
             }
 
             return true;
@@ -62,16 +79,26 @@ namespace ToyRobotSimulator
 
         private bool onMoveRequested(object sender, object param)
         {
-            if (isOnTable())
+            if (isOnTable(sender))
             {
-                currentLocation = table.Move(currentLocation, currentDirection);
+                try
+                {
+                    currentLocation = table.Move(currentLocation, currentDirection);
+                }
+                catch (InvalidOperationException ex)
+                { 
+                    if (!exceptionEvent.RaiseEvent(sender, ex))
+                        throw;
+                    return false;
+                }
+            
             }
             return true;
         }
 
         private bool onLeftRequested(object sender, object param)
         {
-            if (isOnTable())
+            if (isOnTable(sender))
             {
                 changeDirection(-1);
             }
@@ -80,7 +107,7 @@ namespace ToyRobotSimulator
 
         private bool onRightRequested(object sender, object param)
         {
-            if (isOnTable())
+            if (isOnTable(sender))
             {
                 changeDirection(1);
             }
@@ -91,10 +118,10 @@ namespace ToyRobotSimulator
         {
             var cd = (int)currentDirection;
             cd += rotate;
-            if (cd < (int)DirectionList.North)
-                currentDirection = DirectionList.West;
-            else if (cd > (int)DirectionList.West)
-                currentDirection = DirectionList.North;
+            if (cd < (int)DirectionList.NORTH)
+                currentDirection = DirectionList.WEST;
+            else if (cd > (int)DirectionList.WEST)
+                currentDirection = DirectionList.NORTH;
             else
                 currentDirection = (DirectionList)cd;
         }

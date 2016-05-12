@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using ToyRobotSimulator.Commands;
 using ToyRobotSimulator.Events;
 using ToyRobotSimulator.Events.Reporting;
@@ -9,7 +10,8 @@ namespace ToyRobotSimulator.Tests
     public class ToyRobotTests
     {
         [TestMethod]
-        public void Execute_ReportCommand_DoesNotReportsCurrentLocationDueToNotOnTable()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Execute_ReportCommand_DoesNotReportsCurrentLocation_ThrowsException()
         {
             var eventBus = new EventBus();
             var commandBus = new CommandBus();
@@ -39,7 +41,7 @@ namespace ToyRobotSimulator.Tests
             var toyRobot = new ToyRobot(eventBus, table);
 
             //Send Command
-            var place = new Report(new Coordinates(1, 1), DirectionList.East);
+            var place = new Report(new Coordinates(1, 1), DirectionList.EAST);
             commandBus.ExecuteCommand(new PlaceCommand(eventBus, place));
 
             Report report = null;
@@ -56,10 +58,26 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(1, report.Coordinates.X, "x coordinate should be 1");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.East, report.Direction, "Direction should be east");
+            Assert.AreEqual(DirectionList.EAST, report.Direction, "Direction should be east");
 
 
 
+
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Execute_PlaceCommand_PlacesAtInvalidLocation_ThrowsException()
+        {
+            var eventBus = new EventBus();
+            var commandBus = new CommandBus();
+            var table = new Table(5, 5);
+            var toyRobot = new ToyRobot(eventBus, table);
+
+            //Send Command
+            var place = new Report(new Coordinates(5, 5), DirectionList.EAST);
+            commandBus.ExecuteCommand(new PlaceCommand(eventBus, place));
 
         }
 
@@ -74,7 +92,7 @@ namespace ToyRobotSimulator.Tests
             var toyRobot = new ToyRobot(eventBus, table);
 
             //Send Command
-            var place = new Report(new Coordinates(1, 1), DirectionList.East);
+            var place = new Report(new Coordinates(1, 1), DirectionList.EAST);
             commandBus.ExecuteCommand(new PlaceCommand(eventBus, place));
 
             Report report = null;
@@ -91,7 +109,7 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(1, report.Coordinates.X, "x coordinate should be 1");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.East, report.Direction, "Direction should be east");
+            Assert.AreEqual(DirectionList.EAST, report.Direction, "Direction should be east");
 
             //Now send move command
             commandBus.ExecuteCommand(new MoveCommand(eventBus));
@@ -101,7 +119,7 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(2, report.Coordinates.X, "x coordinate should be 2");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.East, report.Direction, "Direction should be east");
+            Assert.AreEqual(DirectionList.EAST, report.Direction, "Direction should be east");
         }
 
         [TestMethod]
@@ -114,7 +132,7 @@ namespace ToyRobotSimulator.Tests
             var toyRobot = new ToyRobot(eventBus, table);
 
             //Send Command
-            var place = new Report(new Coordinates(1, 1), DirectionList.East);
+            var place = new Report(new Coordinates(1, 1), DirectionList.EAST);
             commandBus.ExecuteCommand(new PlaceCommand(eventBus, place));
 
             Report report = null;
@@ -131,7 +149,7 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(1, report.Coordinates.X, "x coordinate should be 1");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.East, report.Direction, "Direction should be east");
+            Assert.AreEqual(DirectionList.EAST, report.Direction, "Direction should be east");
 
             //Now send left command
             commandBus.ExecuteCommand(new LeftCommand(eventBus));
@@ -141,7 +159,7 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(1, report.Coordinates.X, "x coordinate should be 1");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.North, report.Direction, "Direction should be north");
+            Assert.AreEqual(DirectionList.NORTH, report.Direction, "Direction should be north");
         }
 
         [TestMethod]
@@ -154,7 +172,7 @@ namespace ToyRobotSimulator.Tests
             var toyRobot = new ToyRobot(eventBus, table);
 
             //Send Command
-            var place = new Report(new Coordinates(1, 1), DirectionList.East);
+            var place = new Report(new Coordinates(1, 1), DirectionList.EAST);
             commandBus.ExecuteCommand(new PlaceCommand(eventBus, place));
 
             Report report = null;
@@ -171,7 +189,7 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(1, report.Coordinates.X, "x coordinate should be 1");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.East, report.Direction, "Direction should be east");
+            Assert.AreEqual(DirectionList.EAST, report.Direction, "Direction should be east");
 
             //Now send right command
             commandBus.ExecuteCommand(new RightCommand(eventBus));
@@ -181,7 +199,7 @@ namespace ToyRobotSimulator.Tests
 
             Assert.AreEqual(1, report.Coordinates.X, "x coordinate should be 1");
             Assert.AreEqual(1, report.Coordinates.Y, "y coordinate should be 1");
-            Assert.AreEqual(DirectionList.South, report.Direction, "Direction should be south");
+            Assert.AreEqual(DirectionList.SOUTH, report.Direction, "Direction should be south");
         }
 
 

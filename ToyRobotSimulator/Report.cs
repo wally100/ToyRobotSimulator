@@ -33,5 +33,14 @@ namespace ToyRobotSimulator
             }
         }
 
+        
+        public string Display
+        {
+            get
+            {
+                return string.Format("{0}, {1}, {2}", coordinates.XDisplay, coordinates.YDisplay, Enum.GetName(typeof(DirectionList), Direction));
+            }
+        }
+
     } 
 }

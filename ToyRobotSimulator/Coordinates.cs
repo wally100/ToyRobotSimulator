@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ToyRobotSimulator
+﻿namespace ToyRobotSimulator
 {
     public class Coordinates
     {
@@ -16,5 +10,16 @@ namespace ToyRobotSimulator
 
         public int? X { get; set; }
         public int? Y { get; set; }
+
+        public string XDisplay
+        {
+            get { return X.HasValue ? X.Value.ToString() : "Null"; }
+        }
+
+        public string YDisplay
+        {
+            get { return Y.HasValue ? Y.Value.ToString() : "Null"; }
+        }
+
     }
 }
